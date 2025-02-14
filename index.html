@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scratch & Win</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f8f8;
+        }
+        canvas {
+            margin-top: 20px;
+            border: 2px solid #ddd;
+        }
+        #prize {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Scratch & Win a Discount!</h2>
+    <canvas id="scratchCanvas" width="300" height="150"></canvas>
+    <div id="prize" style="display: none;"></div>
+    <script>
+        const prizes = ["5% Off", "10% Off", "15% Off", "Buy 1 Get 1 Free"];
+        const prize = prizes[Math.floor(Math.random() * prizes.length)];
+        document.getElementById("prize").innerText = prize;
+
+        const canvas = document.getElementById("scratchCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "gray";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let isScratching = false;
+
+        function scratch(e) {
+            if (!isScratching) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.beginPath();
+            ctx.arc(x, y, 15, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        canvas.addEventListener("mousedown", () => isScratching = true);
+        canvas.addEventListener("mouseup", () => isScratching = false);
+        canvas.addEventListener("mousemove", scratch);
+
+        setTimeout(() => {
+            document.getElementById("prize").style.display = "block";
+        }, 3000);
+    </script>
+</body>
+</html>
