@@ -13,6 +13,7 @@
         canvas {
             margin-top: 20px;
             border: 2px solid #ddd;
+            touch-action: none; /* Prevents scrolling while scratching */
         }
         #prize {
             font-size: 24px;
@@ -37,20 +38,42 @@
 
         let isScratching = false;
 
+        function getPosition(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
+                y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+            };
+        }
+
         function scratch(e) {
             if (!isScratching) return;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            e.preventDefault();
+            const { x, y } = getPosition(e);
             ctx.globalCompositeOperation = "destination-out";
             ctx.beginPath();
             ctx.arc(x, y, 15, 0, Math.PI * 2);
             ctx.fill();
         }
 
-        canvas.addEventListener("mousedown", () => isScratching = true);
-        canvas.addEventListener("mouseup", () => isScratching = false);
+        function startScratch(e) {
+            isScratching = true;
+            scratch(e);
+        }
+
+        function stopScratch() {
+            isScratching = false;
+        }
+
+        // Desktop events
+        canvas.addEventListener("mousedown", startScratch);
         canvas.addEventListener("mousemove", scratch);
+        canvas.addEventListener("mouseup", stopScratch);
+
+        // Mobile events
+        canvas.addEventListener("touchstart", startScratch);
+        canvas.addEventListener("touchmove", scratch);
+        canvas.addEventListener("touchend", stopScratch);
 
         setTimeout(() => {
             document.getElementById("prize").style.display = "block";
@@ -58,3 +81,4 @@
     </script>
 </body>
 </html>
+
