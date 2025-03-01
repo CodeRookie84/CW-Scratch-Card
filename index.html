@@ -28,7 +28,7 @@
     <script>
         const prizes = ["5% Off on Next bill", "10% Off on Next bill", "Free Pastry on Orders above Rs.500", "Buy 1 Get 1 Free (Entire chocolate range)"];
         const prize = prizes[Math.floor(Math.random() * prizes.length)];
-        
+        document.getElementById("prize").innerText = prize;
 
         const canvas = document.getElementById("scratchCanvas");
         const ctx = canvas.getContext("2d");
@@ -52,7 +52,9 @@
         canvas.addEventListener("mouseup", () => isScratching = false);
         canvas.addEventListener("mousemove", scratch);
 
-        document.getElementById("prize").innerText = prize;
+        setTimeout(() => {
+            document.getElementById("prize").style.display = "block";
+        }, 10000);
     </script>
 </body>
 </html>
